@@ -1,5 +1,6 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, dialog } from 'electron';
 import path from 'node:path';
+import { handleOpenDialog } from './libs';
 
 // The built directory structure
 //
@@ -51,6 +52,9 @@ function createWindow() {
   win?.once('ready-to-show', () => {
     win?.show();
     win?.focus();
+    if (win) {
+      handleOpenDialog(dialog, win);
+    }
   });
 }
 
