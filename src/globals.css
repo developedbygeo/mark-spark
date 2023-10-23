@@ -1,0 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-gradient-background font-sans text-gray-200;
+  }
+
+  h1 {
+    @apply text-lg;
+  }
+
+  p,
+  span,
+  pre {
+    @apply text-base;
+  }
+}
+
+@layer utilities {
+  .c-scrollbar {
+    @apply scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-700;
+  }
+}
