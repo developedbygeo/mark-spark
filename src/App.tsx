@@ -1,15 +1,14 @@
-import { useState } from 'react';
 import Layout from 'src/components/modules/Layout';
-import HtmlView from 'src/components/modules/HtmlView';
+import PreviewView from 'src/components/modules/PreviewView';
 import MarkdownEditor from 'src/components/modules/MarkdownEditor';
 
 const App = () => {
   return (
     <>
       <Layout>
-        <div className="w-full px-6 py-12 flex gap-8">
-          <MarkdownEditor className="flex-1 flex-grow" />
-          <HtmlView className="flex-1 flex-grow" />
+        <div className="w-full px-6 py-12 grid grid-cols-2 gap-8">
+          <MarkdownEditor />
+          <PreviewView />
         </div>
       </Layout>
     </>
