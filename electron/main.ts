@@ -1,5 +1,6 @@
-import { app, BrowserWindow, dialog, screen } from 'electron';
+import { app, BrowserWindow, dialog, screen, session } from 'electron';
 import path from 'node:path';
+import os from 'node:os';
 import { handleOpenDialog } from './libs';
 
 // The built directory structure
@@ -77,4 +78,13 @@ app.on('activate', () => {
   }
 });
 
-app.whenReady().then(createWindow);
+const reduxDevTools = path.join(
+  os.homedir(),
+  '/Library/Application Support/Google/Chrome/Default/Extensions/lmhkpmbekcpmknklioeibfkpmmfibljd/3.1.3_0'
+);
+
+app.whenReady().then(async () => {
+  console.log(reduxDevTools);
+  await session.defaultSession.loadExtension(reduxDevTools);
+  createWindow();
+});
