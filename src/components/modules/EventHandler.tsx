@@ -5,11 +5,9 @@ import { setMarkdown, setPreview } from 'src/store/slices/markdownSlice';
 const EventHandler = () => {
   const dispatch = useAppDispatch();
 
-  window.ipcRenderer.on('selected-file', async (_, content: string, filepath: string) => {
-    const preprocessedHTML = preprocessHtml(content);
-
+  window.actionsApi.onSelectedFile((content: string, filePath: string) => {
     dispatch(setMarkdown(content));
-    dispatch(setPreview(preprocessedHTML));
+    dispatch(setPreview(preprocessHtml(content)));
   });
 
   return null;

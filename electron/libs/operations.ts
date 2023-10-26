@@ -1,4 +1,4 @@
-import { BrowserWindow } from 'electron';
+import { BrowserWindow, ipcMain } from 'electron';
 import { readFile } from 'node:fs/promises';
 
 export const handleOpenDialog = async (dialog: Electron.Dialog, browserWindow: BrowserWindow) => {
@@ -6,7 +6,6 @@ export const handleOpenDialog = async (dialog: Electron.Dialog, browserWindow: B
     properties: ['openFile'],
     filters: [{ name: 'Markdown File', extensions: ['md'] }],
   });
-  console.log(result);
 
   if (result.canceled) return;
 
