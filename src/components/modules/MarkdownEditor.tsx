@@ -1,23 +1,31 @@
-import { useState } from 'react';
+import { useCallback } from 'react';
+import { debounce } from 'lodash';
 
+import { setMarkdown } from 'src/store/slices/markdownSlice';
 import { WithClassName } from 'src/types/UI';
+import { useAppSelector, useAppDispatch } from 'src/store/hooks';
 
-import { Label } from 'src/components/Label';
 import { Textarea } from 'src/components/Textarea';
+import { Label } from 'src/components/Label';
 
 const MarkdownEditor = ({ className }: WithClassName) => {
-  const [input, setInput] = useState<null | string>(null);
+  const markdownText = useAppSelector((state) => state.data.markdown);
+  const dispatch = useAppDispatch();
 
-  window.ipcRenderer.on('selected-file', async (_, content: string, filepath: string) => {
-    setInput(content);
-  });
+  const handleChange = useCallback(
+    debounce((e: React.ChangeEvent<HTMLTextAreaElement>) => {
+      dispatch(setMarkdown(e.target.value));
+    }, 250),
+    []
+  );
 
   return (
     <section className={className}>
       <h2 className="sr-only">HTML View</h2>
       <Label htmlFor="markdown-view">Markdown</Label>
       <Textarea
-        value={input || ''}
+        onChange={handleChange}
+        defaultValue={markdownText || ''}
         className="h-[80vh] overflow-y-auto resize-none c-scrollbar mt-8"
         id="markdown-view"
       />
