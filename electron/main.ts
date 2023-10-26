@@ -1,7 +1,8 @@
 import { app, BrowserWindow, dialog, screen, session } from 'electron';
 import path from 'node:path';
 import os from 'node:os';
-import { handleOpenDialog } from './libs';
+import { handleOpenDialog } from './libs/operations';
+import handleEvents from './events';
 
 // The built directory structure
 //
@@ -19,7 +20,7 @@ let win: BrowserWindow | null;
 // 🚧 Use ['ENV_NAME'] avoid vite:define plugin - Vite@2.x
 const VITE_DEV_SERVER_URL = process.env['VITE_DEV_SERVER_URL'];
 
-function createWindow() {
+const createWindow = () => {
   const { width, height } = screen.getPrimaryDisplay().workAreaSize;
   win = new BrowserWindow({
     width: width * 0.8,
@@ -58,7 +59,7 @@ function createWindow() {
       handleOpenDialog(dialog, win);
     }
   });
-}
+};
 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
@@ -78,13 +79,16 @@ app.on('activate', () => {
   }
 });
 
+// TODO REMOVE BEFORE PACKAGING.
 const reduxDevTools = path.join(
   os.homedir(),
   '/Library/Application Support/Google/Chrome/Default/Extensions/lmhkpmbekcpmknklioeibfkpmmfibljd/3.1.3_0'
 );
 
 app.whenReady().then(async () => {
-  console.log(reduxDevTools);
   await session.defaultSession.loadExtension(reduxDevTools);
   createWindow();
 });
+
+// Event handling;
+handleEvents(dialog);
