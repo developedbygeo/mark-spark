@@ -1,26 +1,16 @@
 import { contextBridge, ipcRenderer } from 'electron';
+import { OnSelectedFileCb } from './types';
 
-// --------- Expose some API to the Renderer process ---------
-contextBridge.exposeInMainWorld('ipcRenderer', withPrototype(ipcRenderer));
-
-// `exposeInMainWorld` can't detect attributes and methods of `prototype`, manually patching it.
-function withPrototype(obj: Record<string, any>) {
-  const protos = Object.getPrototypeOf(obj);
-
-  for (const [key, value] of Object.entries(protos)) {
-    if (Object.prototype.hasOwnProperty.call(obj, key)) continue;
-
-    if (typeof value === 'function') {
-      // Some native APIs, like `NodeJS.EventEmitter['on']`, don't work in the Renderer process. Wrapping them into a function.
-      obj[key] = function (...args: any) {
-        return value.call(obj, ...args);
-      };
-    } else {
-      obj[key] = value;
-    }
-  }
-  return obj;
-}
+contextBridge.exposeInMainWorld('actionsApi', {
+  showOpenDialog: () => {
+    ipcRenderer.send('show-open-dialog');
+  },
+  onSelectedFile: (callback: OnSelectedFileCb) => {
+    ipcRenderer.on('selected-file', (_, content, filePath) => {
+      callback(content, filePath);
+    });
+  },
+});
 
 // --------- Preload scripts loading ---------
 function domReady(condition: DocumentReadyState[] = ['complete', 'interactive']) {
@@ -56,7 +46,7 @@ const safeDOM = {
  * https://projects.lukehaas.me/css-loaders
  * https://matejkustec.github.io/SpinThatShit
  */
-function useLoading() {
+function handleLoading() {
   const className = `loaders-css__square-spin`;
   const styleContent = `
 @keyframes square-spin {
@@ -93,6 +83,8 @@ function useLoading() {
   oDiv.className = 'app-loading-wrap';
   oDiv.innerHTML = `<div class="${className}"><div></div></div>`;
 
+  console.log('LOADED');
+
   return {
     appendLoading() {
       safeDOM.append(document.head, oStyle);
@@ -107,7 +99,7 @@ function useLoading() {
 
 // ----------------------------------------------------------------------
 
-const { appendLoading, removeLoading } = useLoading();
+const { appendLoading, removeLoading } = handleLoading();
 domReady().then(appendLoading);
 
 window.onmessage = (ev) => {
