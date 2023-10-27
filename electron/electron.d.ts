@@ -8,5 +8,7 @@ declare interface Window {
   actionsApi: {
     showOpenDialog: () => void;
     onSelectedFile: (callback: (content: string, filePath: string) => void) => void;
+    onExportHtml: (htmlString: string) => void;
+    onSaveFile: (content: string) => void;
   };
 }
