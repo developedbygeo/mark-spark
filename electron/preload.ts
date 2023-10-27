@@ -10,6 +10,12 @@ contextBridge.exposeInMainWorld('actionsApi', {
       callback(content, filePath);
     });
   },
+  onExportHtml: (htmlString: string) => {
+    ipcRenderer.send('export-html', htmlString);
+  },
+  onSaveFile: async (content: string) => {
+    ipcRenderer.send('save-file', content);
+  },
 });
 
 // --------- Preload scripts loading ---------
@@ -82,8 +88,6 @@ function handleLoading() {
   oStyle.innerHTML = styleContent;
   oDiv.className = 'app-loading-wrap';
   oDiv.innerHTML = `<div class="${className}"><div></div></div>`;
-
-  console.log('LOADED');
 
   return {
     appendLoading() {
