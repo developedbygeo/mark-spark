@@ -6,6 +6,7 @@ import { InitialMarkdownState } from 'src/types/store';
 const initialState: InitialMarkdownState = {
   markdown: null,
   preview: null,
+  parsedHtml: null,
 };
 
 export const markdownSlice = createSlice({
@@ -19,6 +20,9 @@ export const markdownSlice = createSlice({
     setPreview: (state, action: PayloadAction<string>) => {
       state.preview = action.payload;
     },
+    setParsed: (state, action: PayloadAction<string>) => {
+      state.parsedHtml = action.payload;
+    },
     resetMarkdown: (state) => {
       state.markdown = null;
     },
@@ -28,6 +32,6 @@ export const markdownSlice = createSlice({
   },
 });
 
-export const { setMarkdown, setPreview, resetMarkdown, resetHtml } = markdownSlice.actions;
+export const { setMarkdown, setPreview, setParsed, resetMarkdown, resetHtml } = markdownSlice.actions;
 
 export default markdownSlice.reducer;
