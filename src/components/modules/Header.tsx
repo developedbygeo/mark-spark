@@ -1,7 +1,13 @@
 import { Button } from 'src/components/Button';
+import { useAppSelector } from 'src/store/hooks';
 
 const Header = () => {
+  const parsedHtml = useAppSelector((state) => state.data.parsedHtml);
+  const markdownContent = useAppSelector((state) => state.data.markdown);
+
   const handleOpenFile = () => window.actionsApi.showOpenDialog();
+  const handleExportHtml = () => parsedHtml && window.actionsApi.onExportHtml(parsedHtml);
+  const handleSaveFile = () => markdownContent && window.actionsApi.onSaveFile(markdownContent);
 
   return (
     <header className="bg-gradient-background">
@@ -9,10 +15,12 @@ const Header = () => {
         <div className="flex gap-x-2">
           <Button>New File</Button>
           <Button onClick={handleOpenFile}>Open File</Button>
-          <Button>Save HTML</Button>
+          <Button onClick={handleExportHtml}>Save HTML</Button>
         </div>
         <div className="flex gap-x-2">
-          <Button variant="outline">Save File</Button>
+          <Button onClick={handleSaveFile} variant="outline">
+            Save File
+          </Button>
           <Button variant="outline">Revert Changes</Button>
         </div>
         <div className="flex gap-x-2">
