@@ -1,13 +1,24 @@
-import Markdown from 'markdown-to-jsx';
+import Markdown, { compiler } from 'markdown-to-jsx';
+import ReactDOMServer from 'react-dom/server';
 
-import { useAppSelector } from 'src/store/hooks';
+import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import options from 'src/lib/htmlViewParserOpts';
 
 import { Label } from 'src/components/Label';
 import { WithClassName } from 'src/types/UI';
+import { useEffect } from 'react';
+import { setParsed } from 'src/store/slices/markdownSlice';
 
 const PreviewView = ({ className }: WithClassName) => {
   const previewText = useAppSelector((state) => state.data.preview);
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    if (previewText) {
+      const element = compiler(previewText, options);
+      dispatch(setParsed(ReactDOMServer.renderToString(element)));
+    }
+  }, [previewText]);
 
   return (
     <section className={className}>
